@@ -34,9 +34,12 @@ fig_1()
 print('plotting figure 2....')
 fig_2()   
 
-print('plotting SI theory figures...')
+print('plotting figure 3.... 
 fig_3()   
 
+print('plotting SI theory figures...')
+SI_Theory_Fig1()
+SI_Theory_Fig1(N=1000, output='./output/figures/SIFigurePTrue10percentN1000.png')
 
 print('Fitting psychology data...')
 #Load RPP Data, randomize direction. 

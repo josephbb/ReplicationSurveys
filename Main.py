@@ -34,7 +34,7 @@ fig_1()
 print('plotting figure 2....')
 fig_2()   
 
-print('plotting figure 3.... 
+print('plotting figure 3....')
 fig_3()   
 
 print('plotting SI theory figures...')

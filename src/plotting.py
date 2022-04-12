@@ -1,26 +1,13 @@
 import numpy as np
 import arviz as az
 import matplotlib.pyplot as plt
-import pymc3 as pm
+import pymc as pm
 import pandas as pd
 import polars as pl
-import theano
 import seaborn as sns
 from statsmodels.stats.power import tt_ind_solve_power
 import pyarrow
 from src.theory import *
-def get_ci_rep(k, n):
-    with pm.Model() as m_2:
-        theta = pm.Beta('theta',2,2)
-        rep = pm.Binomial('rep',p=theta, n=k, observed=n)
-    with m_2:
-        trace = pm.sample(
-                cores=4,
-                target_accept=0.95, 
-                random_seed=42
-            )
-    return az.hdi(trace['theta'],hdi_prob=.97)[0], az.hdi(trace['theta'],hdi_prob=.97)[1]
-    
 
 def get_ci_rep(k, n):
     with pm.Model() as m_2:
@@ -29,11 +16,13 @@ def get_ci_rep(k, n):
     with m_2:
         trace = pm.sample(
                 cores=4,
-                target_accept=0.95, 
+                target_accept=0.95,
                 random_seed=42
             )
-    return az.hdi(trace['theta'],hdi_prob=.97)[0], az.hdi(trace['theta'],hdi_prob=.97)[1]
-   
+    ci = az.hdi(trace.posterior['theta'].values.ravel())
+
+    return ci[0], ci[1]
+
 def get_ci_es(df):
     with pm.Model() as m_2:
         sigma = pm.Exponential('sigma',1)
@@ -43,10 +32,11 @@ def get_ci_es(df):
     with m_2:
         trace = pm.sample(
                 cores=4,
-                target_accept=0.95, 
+                target_accept=0.95,
                 random_seed=42
             )
-    return az.hdi(trace['mu'],hdi_prob=.97)[0], az.hdi(trace['mu'],hdi_prob=.97)[1]
+    ci = az.hdi(trace.posterior['mu'].values.ravel())
+    return ci[0], ci[1]
 
 def plot_prior_checks(prior, save_location=False, dpi=300):
     """
@@ -69,7 +59,7 @@ def plot_prior_checks(prior, save_location=False, dpi=300):
     plt.ylabel('Density')
 
     plt.subplot(122)
-    plt.scatter(prior['d_o'][45, :], prior['d_r'][45, :])
+    plt.scatter(prior['d_o'].values[0,45, :], prior['d_r'].values[0,45, :])
     plt.xlabel('Prior Sim Original Effect Size')
     plt.ylabel('Prior Sim Replication Effect Size')
     plt.tight_layout()
@@ -119,7 +109,7 @@ def plot_posterior_predictive(df, ppc, save_loc=False, dpi=300):
             df.direction*ppc['d_r'].mean(axis=0), 'o', c='k', alpha=.5, label='Posterior Predictive')
     plt.xlabel('Original Effect Size')
     plt.ylabel('Replication Effect Size')
-    plt.legend()
+    plt.legend('top right')
     if save_loc:
         plt.savefig(save_loc, dpi=300)
 
@@ -147,7 +137,8 @@ def plot_fig4a(samples_full, axs, max_effect=2,
     axs.set_xlabel('Effect size')
 
 
-def plot_sims(data, y_var, axs, avg_samp, x_var="N", hue='alpha', pal="mako"):
+def plot_sims(data, y_var, axs, avg_samp,
+                x_var="N", hue='alpha', pal="mako",legend_loc='lower right'):
     """
     Plots simulation output :
     Parameters
@@ -170,6 +161,7 @@ def plot_sims(data, y_var, axs, avg_samp, x_var="N", hue='alpha', pal="mako"):
     axs.set_ylim(0, 1)
     axs.set_xlim(np.min(data[x_var]), np.max(data[x_var]))
     axs.set_xlabel('Sample size')
+    axs.legend(loc=legend_loc)
     return axs
 
 
@@ -232,13 +224,13 @@ def plot_sim_figure(i_data, sim_data, df,
         axs[1][0].scatter(df['n_o'].median(),
                           df['d_o'].mean())
         low, high = get_ci_es(df)
-        axs[1][0].plot([df['n_o'].median(), 
+        axs[1][0].plot([df['n_o'].median(),
                   df['n_o'].median()],
                  [low, high])
 
 
     axs[1][0].set_ylim(0, max_effect / 2)
-    #ax2 = axs[1][1].twinx() 
+    #ax2 = axs[1][1].twinx()
     #sns.histplot(df['n_o'][df['n_o'] < 500],ax=ax2,
     #             bins=15,alpha=.5,
     #             zorder=1,color='grey',lw=0)
@@ -249,9 +241,9 @@ def plot_sim_figure(i_data, sim_data, df,
               avg_samp=df['n_o'].median(),
               pal="rocket")
     axs[1][1].set_ylabel("P(replicate)")
-    
+
     #
-    ax2 = axs[1][1].twinx() 
+    ax2 = axs[1][1].twinx()
     sns.histplot(df['n_o'][df['n_o'] < 500],ax=ax2,
                  bins=15,alpha=.5,
                  zorder=1,color='grey',lw=0)
@@ -261,7 +253,7 @@ def plot_sim_figure(i_data, sim_data, df,
     if plot_medians:
         axs[1][1].scatter(df['n_o'].median(), k/n,zorder=2)
         low, high = get_ci_rep(n,k)
-        axs[1][1].plot([df['n_o'].median(), 
+        axs[1][1].plot([df['n_o'].median(),
                   df['n_o'].median()],
                  [low, high],zorder=2)
 
@@ -269,7 +261,8 @@ def plot_sim_figure(i_data, sim_data, df,
     plot_sims(sim_data,
               "type_s_error",
               axs[2][0],
-              avg_samp=df['n_o'].median(), pal="ch:start=1.3,rot=-.1")
+              avg_samp=df['n_o'].median(), pal="ch:start=1.3,rot=-.1",
+              legend_loc='upper right')
     axs[2][0].set_ylabel("Type-S error")
 
     # Plot figure item f, reversals
@@ -277,7 +270,8 @@ def plot_sim_figure(i_data, sim_data, df,
               "reversals",
               axs[2][1],
               avg_samp=df['n_o'].median(),
-              pal="Greys")
+              pal="Greys",
+              legend_loc='upper right')
     axs[2][1].set_ylabel("P(reversal)")
 
     # Flatten axes and label with letters, tighten layout
@@ -639,8 +633,8 @@ def SI_Theory_Fig1(N=100, res=40, p_true=.1,
 
 
 
-def plot4a_alt(idata, max_effect): 
-    az.summary(idata, var_names=['beta', 'tau', 'a_sigma', 'b_sigma'])
+def plot4a_alt(idata, max_effect):
+    az.summary(idata, var_names=[ 'tau', 'a_sigma', 'b_sigma'])
 
     x = np.linspace(0, max_effect, 20)
     y = np.array([idata.posterior['a_sigma'].values  + \
@@ -655,7 +649,7 @@ def plot4a_alt(idata, max_effect):
     plt.xlabel('Effect size')
     plt.ylabel(r'$\sigma$')
     plt.xlim(0,max_effect)
-    
+
 def plot_sim_figure_alt(i_data, sim_data, df,
                     plot_medians=True,
                     rep=35/97,
@@ -714,13 +708,13 @@ def plot_sim_figure_alt(i_data, sim_data, df,
         axs[1][0].scatter(df['n_o'].median(),
                           df['d_o'].mean())
         low, high = get_ci_es(df)
-        axs[1][0].plot([df['n_o'].median(), 
+        axs[1][0].plot([df['n_o'].median(),
                   df['n_o'].median()],
                  [low, high])
 
 
     axs[1][0].set_ylim(0, max_effect / 2)
-    #ax2 = axs[1][1].twinx() 
+    #ax2 = axs[1][1].twinx()
     #sns.histplot(df['n_o'][df['n_o'] < 500],ax=ax2,
     #             bins=15,alpha=.5,
     #             zorder=1,color='grey',lw=0)
@@ -731,9 +725,9 @@ def plot_sim_figure_alt(i_data, sim_data, df,
               avg_samp=df['n_o'].median(),
               pal="rocket")
     axs[1][1].set_ylabel("P(replicate)")
-    
+
     #
-    ax2 = axs[1][1].twinx() 
+    ax2 = axs[1][1].twinx()
     sns.histplot(df['n_o'][df['n_o'] < 500],ax=ax2,
                  bins=15,alpha=.5,
                  zorder=1,color='grey',lw=0)
@@ -743,7 +737,7 @@ def plot_sim_figure_alt(i_data, sim_data, df,
     if plot_medians:
         axs[1][1].scatter(df['n_o'].median(), k/n,zorder=2)
         low, high = get_ci_rep(n,k)
-        axs[1][1].plot([df['n_o'].median(), 
+        axs[1][1].plot([df['n_o'].median(),
                   df['n_o'].median()],
                  [low, high],zorder=2)
 
@@ -774,4 +768,3 @@ def plot_sim_figure_alt(i_data, sim_data, df,
     if save_loc:
         plt.savefig(save_loc, dpi=dpi)
     return axs
-

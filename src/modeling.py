@@ -9,8 +9,7 @@ from statsmodels.stats.power import tt_ind_solve_power
 import pyarrow
 import scipy as sp
 def sample_publishing_model(df, prior={'s':1,
-                                        't':1,
-                                        'b':1}):
+                                        't':1}):
 
     with pm.Model() as m_1:
 
@@ -23,7 +22,6 @@ def sample_publishing_model(df, prior={'s':1,
 
         #Epsilon
         s_o=pm.math.sqrt(pm.math.sqr(sigma) + pm.math.sqr(1/pm.math.sqrt(df.n_o.values)))
-        s_r=pm.math.sqrt(pm.math.sqr(sigma) + pm.math.sqr(1/pm.math.sqrt(df.n_r.values)))
 
         #Model
         d_o = pm.TruncatedNormal("d_o",  mu=signal,
@@ -32,7 +30,7 @@ def sample_publishing_model(df, prior={'s':1,
                                  upper=df.upper.values,
                                  observed=df.d_o*df.direction)
         d_r = pm.Normal("d_r", mu=signal,
-                        sigma=s_r, observed=df.d_r*df.direction)
+                        sigma=s_o, observed=df.d_r*df.direction)
     with m_1:
         dims={
                 "d_r": ["study"],

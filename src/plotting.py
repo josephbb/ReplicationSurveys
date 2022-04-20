@@ -210,7 +210,7 @@ def plot_sim_figure(i_data, sim_data, df,
               axs[0][1],
               avg_samp=df['n_o'].median(),
               pal="mako")
-    axs[0][1].set_ylabel("P(Publish)")
+    axs[0][1].set_ylabel("Pr(Publish)")
 
     # Plot figure item c, effect size
     plot_sims(sim_data, "published_es",
@@ -232,7 +232,7 @@ def plot_sim_figure(i_data, sim_data, df,
     axs[1][0].set_ylim(0, max_effect / 2)
     #ax2 = axs[1][1].twinx()
     #sns.histplot(df['n_o'][df['n_o'] < 500],ax=ax2,
-    #             bins=15,alpha=.5,
+    #             bins=15,alpha=.3,
     #             zorder=1,color='grey',lw=0)
     # plot figure item d, replication rate
     plot_sims(sim_data,
@@ -240,15 +240,16 @@ def plot_sim_figure(i_data, sim_data, df,
               axs[1][1],
               avg_samp=df['n_o'].median(),
               pal="rocket")
-    axs[1][1].set_ylabel("P(replicate)")
+    axs[1][1].set_ylabel("Pr(replicate)")
 
     #
     ax2 = axs[1][1].twinx()
     sns.histplot(df['n_o'][df['n_o'] < 500],ax=ax2,
-                 bins=15,alpha=.5,
+                 bins=15,alpha=.3,
                  zorder=1,color='grey',lw=0)
     ax2.set_ylim(0,df.shape[0])
-
+    ax2.set_yticks([])
+    ax2.set_ylabel('')
     # Plot median effect size from data, if requested
     if plot_medians:
         axs[1][1].scatter(df['n_o'].median(), k/n,zorder=2)
@@ -272,7 +273,44 @@ def plot_sim_figure(i_data, sim_data, df,
               avg_samp=df['n_o'].median(),
               pal="Greys",
               legend_loc='upper right')
-    axs[2][1].set_ylabel("P(reversal)")
+    axs[2][1].set_ylabel("Pr(reversal)")
+
+    ax2 = axs[0][1].twinx()
+    sns.histplot(df['n_o'][df['n_o'] < 500],ax=ax2,
+                 bins=15,alpha=.3,
+                 zorder=1,color='grey',lw=0)
+    ax2.set_ylim(0,df.shape[0])
+    ax2.set_yticks([])
+    ax2.set_ylabel('')
+
+    ax2 = axs[1][0].twinx()
+    sns.histplot(df['n_o'][df['n_o'] < 500],ax=ax2,
+                 bins=15,alpha=.3,
+                 zorder=1,color='grey',lw=0)
+    ax2.set_ylim(0,df.shape[0])
+    ax2.set_yticks([])
+    ax2.set_ylabel('')
+
+
+    ax2 = axs[2][0].twinx()
+    sns.histplot(df['n_o'][df['n_o'] < 500],ax=ax2,
+                 bins=15,alpha=.3,
+                 zorder=1,color='grey',lw=0)
+    ax2.set_ylim(0,df.shape[0])
+    ax2.set_yticks([])
+    ax2.set_ylabel('')
+
+    ax2 = axs[2][1].twinx()
+    ax2.set_yticks([])
+    ax2.set_ylabel('')
+
+    sns.histplot(df['n_o'][df['n_o'] < 500],ax=ax2,
+                 bins=15,alpha=.3,
+                 zorder=1,color='grey',lw=0)
+    ax2.set_ylim(0,df.shape[0])
+    ax2.set_yticks([])
+    ax2.set_ylabel('')
+
 
     # Flatten axes and label with letters, tighten layout
     axs = axs.flat
@@ -555,7 +593,7 @@ def fig_3(N=100, res=40, output='./output/figures/figure3.png'):
 
 
 def SI_Theory_Fig1(N=100, res=40, p_true=.1,
-                   output='./output/figures/figure3.png'):
+                   output='./output/figures/SITHEORY.png'):
 
     sns.set_context('paper', font_scale=1)
     sns.set_palette(sns.color_palette("mako"))
@@ -617,7 +655,7 @@ def SI_Theory_Fig1(N=100, res=40, p_true=.1,
         "ch:start=2.8,rot=.3", as_cmap=True))
     axs[2].set_ylabel(r'$\sigma$' + ' (varying effects)')
     axs[2].set_xlabel(r'$\tau$' + ' (effect size)')
-    axs[2].set_title('Type-S error')
+    axs[2].set_title('Pr(Type-S error)')
 
     import string
     axs = axs.flat

@@ -33,8 +33,9 @@ def publish_vec(tau=.1, sigma=0, epsilon=1, n=30, alpha=0.05):
     return(2 * sp.stats.norm.cdf(-tc))
 
 
+
 @np.vectorize
-def type_m_vec(tau=.4, sigma=.2, epsilon=1, n=100, alpha=0.05):
+def type_m_vec_old(tau=.4, sigma=.2, epsilon=1, n=100, alpha=0.05):
     tc = sp.stats.norm.ppf(1 - alpha / 2)
     tc = (epsilon / np.sqrt(n)) * tc
 
@@ -50,6 +51,18 @@ def type_m_vec(tau=.4, sigma=.2, epsilon=1, n=100, alpha=0.05):
 
     return typem
 
+@np.vectorize
+def type_m_vec(tau=.4, sigma=.2, epsilon=1, n=100, alpha=0.05):
+    tc = sp.stats.norm.ppf(1 - alpha / 2)
+    tc = (epsilon / np.sqrt(n)) * tc
+
+    # lower bound adjusted as per
+    # https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.truncnorm.html
+    var = np.sqrt(tau**2 + sigma**2 + (epsilon**2)/n)
+    avg_hypoth_norm_inv = var / (tau * np.sqrt(2/np.pi))
+    avg_observed = sp.stats.norm().pdf(tc/var) / (1- sp.stats.norm().cdf(tc/var))
+    typem = avg_hypoth_norm_inv * avg_observed
+    return typem
 
 @np.vectorize
 def type_s_vec(tau=.4, sigma=.2, epsilon=1, n=100, alpha=0.05):

@@ -197,7 +197,7 @@ def plot_sim_figure(i_data, sim_data, df,
     """
 
     # Aesthetics + figure layout
-    sns.set_context('paper', font_scale=1)
+    sns.set_context('paper', font_scale=1.25)
     sns.set_palette(sns.color_palette(pal))
     fig, axs = plt.subplots(3, 2, figsize=(8, 12))
 
@@ -328,7 +328,7 @@ def plot_sim_figure(i_data, sim_data, df,
 
 def fig_1(save_loc='./output/figures/Figure1.png'):
     pal = sns.color_palette("colorblind", n_colors=6)
-
+    sns.set_context('paper', font_scale=1.5)
     fig = plt.figure(figsize=(8, 4))
     gs = fig.add_gridspec(1, 1)
     ax1 = fig.add_subplot(gs[0, :])
@@ -345,62 +345,62 @@ def fig_1(save_loc='./output/figures/Figure1.png'):
     ax1.fill_between(np.linspace(0, 2, 100),
                      np.zeros(100),
                      stats.norm(0, .2).pdf(np.linspace(0, 2, 100)),
-                     color=pal[0], alpha=.5)
+                     color=pal[0], alpha=.5,zorder=1)
     ax1.fill_between(np.linspace(0, 2, 100),
                      np.zeros(100),
-                     stats.norm(loc=0.2, scale=0.1).pdf(np.linspace(0, 2, 100)) / 2, color=pal[1], alpha=.3)
+                     stats.norm(loc=0.2, scale=0.1).pdf(np.linspace(0, 2, 100)) / 2, color=pal[1], alpha=.3,zorder=3)
 
     ax1.fill_between(np.linspace(0, 2, 100),
                      np.zeros(100),
-                     stats.norm(loc=0.3, scale=0.03).pdf(np.linspace(0, 2, 100)) / 20, color=pal[2], alpha=.3)
+                     stats.norm(loc=0.3, scale=0.03).pdf(np.linspace(0, 2, 100)) / 20, color=pal[2], alpha=.3,zorder=4)
 
     #Label Distributions
     ax1.plot([0, .2], [1.2, 1.2], color='k')
-    ax1.text(x=.1, y=1.25, s=r'$\tau$', fontsize='x-large', color='k')
+    ax1.text(x=.1, y=1.25, s=r'$\tau$', color='k')
 
 
 
     ax1.plot([.2, .2], [0, 2], color='k', ls='--')
-    ax1.text(x=.28, y=1.25, s=r'$\sigma$', fontsize='x-large', color='k')
+    ax1.text(x=.28, y=1.25, s=r'$\sigma$', color='k')
 
-    ax1.text(x=.31, y=.1, s=r'$\frac{\epsilon}{\sqrt{n}}$', fontsize='x-large')
+    ax1.text(x=.31, y=.1, s=r'$\frac{\epsilon}{\sqrt{n}}$')
     ax1.plot([0.3, .34], [0.27, 0.27], color='k')
 
     #Add line for d_true
     ax1.plot([0.2, .31], [1.1, 1.1], color='k')
-    ax1.text(x=.2, y=2.1, s=r'$d_{true}$', fontsize='x-large')
+    ax1.text(x=.2, y=2.1, s=r'$d_{true}$')
 
     #Add line for original effect size
     ax1.plot([0.1, 0.1], [0, stats.norm(loc=0.25, scale=0.1).pdf(
         0.1) / 2], ls='--', color='k', zorder=3)
-    ax1.text(x=.25, y=.73, s=r'$d_{original}$', fontsize='x-large')
+    ax1.text(x=.25, y=.73, s=r'$d_{original}$')
 
     #Add line for replication effectsize and label
     ax1.plot([0.3, 0.3], [0, stats.norm(
         loc=0.25, scale=0.1).pdf(0.4) / 2], ls='--', color='k')
-    ax1.text(x=.05, y=.73, s=r'$d_{replication}$', fontsize='x-large')
+    ax1.text(x=.05, y=.73, s=r'$d_{replication}$')
 
     #Add line for t_crit and label
     ax1.plot([.22, .22], [0, .4], color='k')
-    ax1.text(x=.21, y=.43, s=r'$t_{crit.}$', fontsize='x-large')
+    ax1.text(x=.21, y=.43, s=r'$t_{crit.}$')
 
 
-    #Add annotations
-    plt.annotate("Average hypothesized effect size",
-                 xy=(0.13, 1.3), xytext=(.5, 1.8),
-                 arrowprops=dict(headwidth=10, headlength=10,
-                                 width=0.1, color='k'),
-                 fontsize='large')
-
-    plt.annotate("Variation in observed effects", xy=(0.31, 1.30), xytext=(.5, 1.0),
-                 arrowprops=dict(headwidth=10, headlength=10,
-                                 width=0.1, color='k'),
-                 fontsize='large')
-
-    plt.annotate("Measurement Error", xy=(0.35, .12), xytext=(.45, 0.1),
-                 arrowprops=dict(headwidth=10, headlength=10,
-                                 width=0.1, color='k'),
-                 fontsize='large')
+    # #Add annotations
+    # plt.annotate("Hypothesized effect size",
+    #              xy=(0.13, 1.3), xytext=(.5, 1.8),
+    #              arrowprops=dict(headwidth=10, headlength=10,
+    #                              width=0.1, color='k'),
+    #              fontsize='large')
+    #
+    # plt.annotate("Variation in effects", xy=(0.31, 1.2), xytext=(.5, 0.9),
+    #              arrowprops=dict(headwidth=10, headlength=10,
+    #                              width=0.1, color='k'),
+    #              fontsize='large')
+    #
+    # plt.annotate("Measurement Error", xy=(0.35, .12), xytext=(.45, 0.1),
+    #              arrowprops=dict(headwidth=10, headlength=10,
+    #                              width=0.1, color='k'),
+    #              fontsize='large')
 
     ax1.set_xticks(np.linspace(0, 1, 11))
     ax1.set_xlim(0, .8)
@@ -414,7 +414,7 @@ def fig_1(save_loc='./output/figures/Figure1.png'):
 
 
 def fig_2(N=100, res=40, output='./output/figures/figure2.png'):
-    sns.set_context('paper', font_scale=1)
+    sns.set_context('paper', font_scale=1.25)
     sns.set_palette(sns.color_palette("mako"))
 
     fig, axs = plt.subplots(2, 2, figsize=(8, 8))
@@ -436,7 +436,7 @@ def fig_2(N=100, res=40, output='./output/figures/figure2.png'):
                         cmap=sns.color_palette("mako", as_cmap=True))
     axs0.set_ylabel(r'$\sigma$' + ' (varying effects)')
     axs0.set_xlabel(r'$\tau$' + ' (effect size)')
-    axs0.set_title('Pr(publish)\n' + 'N=' + str(N) + ', ' + r'$\epsilon=1$')
+    #axs0.set_title('Pr(publish)\n' + 'N=' + str(N) + ', ' + r'$\epsilon=1$')
 
     # 2B
     # Set Axis
@@ -454,7 +454,7 @@ def fig_2(N=100, res=40, output='./output/figures/figure2.png'):
                         cmap=sns.color_palette("rocket", as_cmap=True))
     axs1.set_ylabel(r'$\sigma$' + ' (varying effects)')
     axs1.set_xlabel(r'$\tau$' + ' (effect size)')
-    axs1.set_title('Pr(replicate)\n' + 'N=' + str(N) + ', ' + r'$\epsilon=1$')
+    #axs1.set_title('Pr(replicate)\n' + 'N=' + str(N) + ', ' + r'$\epsilon=1$')
 
     # 2C
     # Calculate mesh grid
@@ -472,7 +472,7 @@ def fig_2(N=100, res=40, output='./output/figures/figure2.png'):
         N, X, Z, zorder=1, levels=levels, cmap=sns.color_palette("mako", as_cmap=True))
     axs[1][0].set_ylabel(r'$\sigma$' + ' (varying effects)')
     # \n' +'N='+str(N) + ', ' + r'$\epsilon=1$')
-    axs[1][0].set_title('Pr(publish)')
+    #axs[1][0].set_title('Pr(publish)')
     axs[1][0].set_xlabel('Sample size')
 
     # 2D
@@ -491,7 +491,7 @@ def fig_2(N=100, res=40, output='./output/figures/figure2.png'):
     axs[1][1].set_ylabel(r'$\sigma$' + ' (varying effects)')
     axs[1][1].set_xlabel('Sample size')
     # \n' +'N='+str(N) + ', ' + r'$\epsilon=1$')
-    axs[1][1].set_title('Pr(replicate)')
+    #axs[1][1].set_title('Pr(replicate)')
     axs[1][1].plot([30, 1000], [.2, .2], color='k', ls='--', alpha=.5)
 
     # Label subplots alphabetically
@@ -509,6 +509,7 @@ def fig_2(N=100, res=40, output='./output/figures/figure2.png'):
 
 
 def fig_3(N=100, res=40, output='./output/figures/figure3.png'):
+    sns.set_context('paper', font_scale=1.25)
 
     fig, axs = plt.subplots(2, 2, figsize=(8, 8))
     x = np.linspace(0.01, 1, res)
@@ -525,7 +526,7 @@ def fig_3(N=100, res=40, output='./output/figures/figure3.png'):
         "ch:start=2.8,rot=.3", as_cmap=True))
     axs[0][0].set_ylabel(r'$\sigma$' + ' (varying effects)')
     axs[0][0].set_xlabel(r'$\tau$' + ' (effect size)')
-    axs[0][0].set_title('Pr(Type-S)')  # N=50, ' + r'$\epsilon=1$')
+    #axs[0][0].set_title('Pr(Type-S)')  # N=50, ' + r'$\epsilon=1$')
 
     x = np.linspace(0.01, 1, res)
     y = np.linspace(0.01, 1, res)
@@ -544,7 +545,7 @@ def fig_3(N=100, res=40, output='./output/figures/figure3.png'):
 
     axs[0][1].set_ylabel(r'$\sigma$' + ' (varying effects)')
     axs[0][1].set_xlabel(r'$\tau$' + ' (effect size)')
-    axs[0][1].set_title('Type-M error')  # N=50, ' + r'$\epsilon=1$')
+    #axs[0][1].set_title('Type-M error')  # N=50, ' + r'$\epsilon=1$')
     axs[0][1].fill_between([0, 1], [1, 1], color='k', zorder=-1)
     axs[0][1].set_ylim(0.01, 1)
     axs[0][1].set_xlim(0.01, 1)
@@ -562,7 +563,7 @@ def fig_3(N=100, res=40, output='./output/figures/figure3.png'):
     CSF = axs[1][0].contourf(N, X, Z, zorder=1,
                              levels=levels, cmap=sns.color_palette("ch:start=2.8,rot=.3", as_cmap=True))
     axs[1][0].set_ylabel(r'$\sigma$' + ' (varying effects)')
-    axs[1][0].set_title('Pr(Type-S)')  # N=50, ' + r'$\epsilon=1$')
+    #axs[1][0].set_title('Pr(Type-S)')  # N=50, ' + r'$\epsilon=1$')
     axs[1][0].set_xlabel('Sample size')
     axs[1][0].set_xlim((30, 1000))
 
@@ -578,7 +579,7 @@ def fig_3(N=100, res=40, output='./output/figures/figure3.png'):
         "ch:start=1.3,rot=-.1", as_cmap=True))
     axs[1][1].set_ylabel(r'$\sigma$' + ' (varying effects)')
     axs[1][1].set_xlabel('Sample size')
-    axs[1][1].set_title('Type-M')  # N=50, ' + r'$\epsilon=1$')
+    #axs[1][1].set_title('Type-M')  # N=50, ' + r'$\epsilon=1$')
     axs[1][1].plot([30, 1000], [.2, .2], color='k', ls='--', alpha=.5)
     axs[1][1].set_xlim((30, 1000))
 
@@ -595,7 +596,7 @@ def fig_3(N=100, res=40, output='./output/figures/figure3.png'):
 def SI_Theory_Fig1(N=100, res=40, p_true=.1,
                    output='./output/figures/SITHEORY.png'):
 
-    sns.set_context('paper', font_scale=1)
+    sns.set_context('paper', font_scale=1.25)
     sns.set_palette(sns.color_palette("mako"))
 
     fig, axs = plt.subplots(1, 3, figsize=(12, 4))
@@ -619,7 +620,7 @@ def SI_Theory_Fig1(N=100, res=40, p_true=.1,
                         cmap=sns.color_palette("mako", as_cmap=True))
     axs0.set_ylabel(r'$\sigma$' + ' (varying effects)')
     axs0.set_xlabel(r'$\tau$' + ' (effect size)')
-    axs0.set_title('Pr(publish)\n' + 'N=100, ' + r'$\epsilon=1$')
+    #axs0.set_title('Pr(publish)\n' + 'N=100, ' + r'$\epsilon=1$')
 
     axs1 = axs[1]
     x = np.linspace(0, 1.0, res)
@@ -637,7 +638,7 @@ def SI_Theory_Fig1(N=100, res=40, p_true=.1,
                         cmap=sns.color_palette("rocket", as_cmap=True))
     axs1.set_ylabel(r'$\sigma$' + ' (varying effects)')
     axs1.set_xlabel(r'$\tau$' + ' (effect size)')
-    axs1.set_title('Pr(replicate)\n' + 'N=100, ' + r'$\epsilon=1$')
+    #axs1.set_title('Pr(replicate)\n' + 'N=100, ' + r'$\epsilon=1$')
 
     x = np.linspace(0.001, 1, res)
     y = np.linspace(0.001, 1, res)
@@ -655,7 +656,7 @@ def SI_Theory_Fig1(N=100, res=40, p_true=.1,
         "ch:start=2.8,rot=.3", as_cmap=True))
     axs[2].set_ylabel(r'$\sigma$' + ' (varying effects)')
     axs[2].set_xlabel(r'$\tau$' + ' (effect size)')
-    axs[2].set_title('Pr(Type-S error)')
+    #axs[2].set_title('Pr(Type-S error)')
 
     import string
     axs = axs.flat

@@ -1,5 +1,7 @@
 # Replication does not measure scientific productivity
+
 ## System Requirements
+
 ### Hardware
 Our data and analysis were conducted on a linux server with sixty-four 2.6GHz CPUs and 256GB RAM. 
 It has a 256GB primary disk partition on an RAID1 SSD and an 8TB secondary partition for home directories on a RAID6 storage array.
@@ -14,21 +16,23 @@ To install required packages, clone the repository and navigate to the directory
 pip install -r requirements.txt
 ``
 Installation time will vary depending upon what you already have installed, typically no more than 30 minutes. 
+
 ## Reproducing our analysis
 
 ### Downloading data
 
+The data used in our analysis can be downloaded from the original study's OSF Repository: 
 
-### Running the code
+https://osf.io/fgjvw/download
 
-#### Simplest
+## Running the code
 
-#### As jupyter notebooks
+The easiset way to run the code is to execute the jupyter notebooks from the command line:
 
+``
+jupyter nbconvert --execute Theory.ipynb
+jupyter nbconvert --execute StatisticalModel.ipynb
+``
 
-#### As a python file 
-
-Running the code is the same as running any other Jupyter notebook. On our machine, it took approximately 8 hours using 
-a fraction of the resources. It may take several hours/multiple days depending upon your system specifications
 <h2>Replicating the results</h2>
-The jupyter notebook reproduces all results exactly as they are presented in the paper. 
+The jupyter notebooka reproduce all results as they are presented in the paper. 

@@ -31,6 +31,9 @@ The easiset way to run the code is to execute the jupyter notebooks from the com
 
 ``
 jupyter nbconvert --to notebook --execute Theory.ipynb
+``
+
+``
 jupyter nbconvert --to notebook --execute StatisticalModel.ipynb
 ``
 

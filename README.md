@@ -30,8 +30,8 @@ https://osf.io/fgjvw/download
 The easiset way to run the code is to execute the jupyter notebooks from the command line:
 
 ``
-jupyter nbconvert --execute Theory.ipynb
-jupyter nbconvert --execute StatisticalModel.ipynb
+jupyter nbconvert --to notebook --execute Theory.ipynb
+jupyter nbconvert --to notebook --execute StatisticalModel.ipynb
 ``
 
 <h2>Replicating the results</h2>
